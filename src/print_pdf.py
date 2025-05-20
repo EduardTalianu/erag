@@ -638,6 +638,15 @@ class PDFReportGenerator:
 
     def _clean_text(self, text):
         """Clean text to make it safe for ReportLab."""
+        # Fix specific problematic tag patterns before processing
+        # Fix the specific nested tags issue with salary bracket text
+        text = text.replace("<b>Outlier in 'salariu<i>sb' (Salary Bracket):</b>", 
+                        "<b>Outlier in 'salariu sb' (Salary Bracket):</b>")
+        
+        # More general approach to fix overlapping/improperly nested tags
+        text = re.sub(r'(<b>.*?)<i>(.*?)</b>(.*?)</i>', r'\1\2</b><i>\3</i>', text)
+        text = re.sub(r'(<i>.*?)<b>(.*?)</i>(.*?)</b>', r'\1\2</i><b>\3</b>', text)
+        
         # Process markdown first
         text = self._process_markdown_inline(str(text))
         

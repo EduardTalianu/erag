@@ -1245,7 +1245,12 @@ class AdvancedExploratoryDataAnalysisB5:
         for col in numeric_cols:
             data = df[col].dropna().values
             
-            statistic, p_value, skew, kurtosis = jarque_bera(data)
+            # Get just the stat and p-value from jarque_bera
+            statistic, p_value = jarque_bera(data)
+            
+            # Calculate skewness and kurtosis separately
+            skew = stats.skew(data)
+            kurtosis = stats.kurtosis(data)
             
             results[col] = {
                 'test_statistic': statistic,
